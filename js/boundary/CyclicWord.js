@@ -23,6 +23,21 @@ return ("Error: Word and base are not compatible. word:"+this.toString()+" base:
 		this.word[this.word.length-1]=-1;
 	}
 
+	static	bar(i) {
+			if(Number.isInteger(i) == true) {
+				if(i%2==0) {
+					return i+1;
+				}
+				return i-1;
+			} else {
+				var barword = [];
+	 			for(var j=0;j<i.word.length;j++) {
+	 				barword[i.word.length-1-j] = Word.bar(i.get(j));
+	 			}
+	 			return new Word(barword,i.base);
+			}
+		}
+
 	canonicalization(){
 		var max = new Word(this.word, this.base);
 		for(var i=1;i<this.word.length;i++){
@@ -53,7 +68,7 @@ return ("Error: Word and base are not compatible. word:"+this.toString()+" base:
 
   isReduced(){
 		for(var i=0;i<this.word.length;i++){
-			if(this.get(i) == this.bar(this.get(i+1))){
+			if(this.get(i) == CyclicWord.bar(this.get(i+1))){
 				return false;
 			}
 		}
@@ -80,7 +95,7 @@ return ("Error: Word and base are not compatible. word:"+this.toString()+" base:
 			v.word[i] = this.get(i);
 		}
 		for(var i=0;i<this.word.length;i++){
-			v.word[i] = this.bar(this.get(this.word.length-1-i));
+			v.word[i] = CyclicWord.bar(this.get(this.word.length-1-i));
 		}
 		for(i=0;i<this.word.length;i++){
 			for(var j=0;j<this.word.length;j++){
@@ -102,7 +117,7 @@ return ("Error: Word and base are not compatible. word:"+this.toString()+" base:
 			v1.word[i] = this.get(i);
 		}
 		for(var i=0;i<this.word.length;i++){
-			v1.word[i] = this.bar(this.word[this.word.length-1-i]);
+			v1.word[i] = CyclicWord.bar(this.word[this.word.length-1-i]);
 		}
 		for(i=0;i<this.word.length;i++){
 			for(var j=0;j<this.word.length;j++){

@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import Word from '../js/boundary/Word';
 var expect = require('chai').expect;
-describe('Example tests', function() {
+describe('Example tests_Word', function() {
   let word = new Word([1,3,4],10); //it works
 
   it('Creates Word without base', function() {
@@ -51,7 +51,7 @@ describe('Example tests', function() {
 
   it('Checks bar', function() {
     let word = new Word([1,2,3],10);
-    var word1 = word.bar();
+    var word1 = Word.bar(word);
     expect(word1).to.deep.equal({base:10,word:[2,3,0]});
   });
 
@@ -88,7 +88,7 @@ describe('Example tests', function() {
   it('Checks toString', function() {
     let word = new Word([0,1,2,3],10);
     var StringWord = word.toString();
-    expect(StringWord).to.deep.equal(['a','A','b','B']);
+    expect(StringWord).to.deep.equal('aAbB');
   });
 
   it('Checks reduce', function() {

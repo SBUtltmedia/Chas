@@ -1,75 +1,66 @@
-//package boundary;
-/*
-public class Word implements Comparable<Word>{
-	public int[] word;
-	public int[] getWord() {
-		return word;
-	}
-*/
+
 export default class Word {
-constructor (word=[],base=undefined)
-{
-this.base=base;
-this.word=word;
-for (var i=0;i<this.word.length;i++)
-{
-if(word[i]>=base)
-return ("Error: Word and base are not compatible. word:"+this.toString()+" base:"+base);
 
-}
-}
+	constructor (word=[], base=undefined)
+	{
+		this.base=base;
+		this.word=word;
+		for (var i=0; i<this.word.length; i++)
+		{
+			if(word[i]>=base)
+			return ("Error: Word and base are not compatible. word:"+this.toString()+" base:"+base);
+		}
+	}
 
+	getWord() {
+		return this.word;
+	}
 
+	clone() { return new Word(this.word, this.base);  }
 
-clone() { return  new Word(this.word,this.base);  }
+	initialize()
+	{
+		var wordLen = this.word.length;
+		this.word = Array.from(new Array(wordLen-1), () => 0);
+		this.word[wordLen-1] = -1;
+	}
 
-initialize()
-{
-	var wordLen=this.word.length;
- this.word = Array.from(new Array(wordLen-1), () => 0);
-		this.word[wordLen-1]=-1;
-}
+	permute(i) {
+		var wordLen=this.word.length;
+		var permWord=[];
+		this.word.map((v,k)=>{
+			permWord[k]=this.word[(k+i)%wordLen]
+		})
+		return new Word(permWord,this.base);
+	}
 
-permute(i)
-{
-var wordLen=this.word.length;
-var permWord=[];
-this.word.map((v,k)=>{
-permWord[k]=this.word[(k+i)%wordLen]
-}
-)
-return new Word(permWord,this.base);
-}
-
-	 get(i){
-		var i = (i%this.word.length + this.word.length)%this.word.length;
+	get(i) {
+		var i = (i%this.word.length + this.word.length) % this.word.length;
 		return this.word[i];
 	}
 
- length() {
+	length() {
 		return this.word.length;
 	}
 
-
- set(i, j){
-			var i = (i%this.word.length + this.word.length)%this.word.length;
+	set(i, j) {
+		var i = (i%this.word.length + this.word.length) % this.word.length;
 		word[i] = j;
 	}
 
-	bar(i){
-		if(Number.isInteger(i) == true){
-		if(i%2==0){
-  		 return i+1;
-  	 }
-  	 return i-1;
-	 }
-	 else{
-		var barword = [];
- 		for(var j=0;j<this.word.length;j++){
- 			barword[this.word.length-1-j] = this.bar(this.get(j));
- 		}
- 		return new Word(barword,this.base);
-	 }
+static	bar(i) {
+		if(Number.isInteger(i) == true) {
+			if(i%2==0) {
+				return i+1;
+			}
+			return i-1;
+		} else {
+			var barword = [];
+ 			for(var j=0;j<i.word.length;j++) {
+ 				barword[i.word.length-1-j] = Word.bar(i.get(j));
+ 			}
+ 			return new Word(barword,i.base);
+		}
 	}
 
   addOne(){
@@ -97,9 +88,10 @@ return new Word(permWord,this.base);
  		 this.word[this.word.length-h]=this.word[this.word.length-h]+1;
  	 }
   }
+
   /******\\
  	* *
- 	*Retursn the word plus one.
+ 	*Returns the word plus one.
  	* @param v
  	* @param base
  	* @return
@@ -110,11 +102,13 @@ return new Word(permWord,this.base);
  		 this.word[this.word.length-h]=0;
  		 h++;
  	 }
- 	 if(h==this.word.length & this.word[0]==this.base-1) this.word[0]=0;
+ 	 if(h==this.word.length & this.word[0]==this.base-1)
+	 	this.word[0]=0;
  	 else if(h <=this.word.length)
  		 this.word[this.word.length-h]=this.word[this.word.length-h]+1;
  	 return new Word(this.word,this.base);
   }
+
   /**
  	* Return if the Word is not in u = v^k form, where k>1
  	*
@@ -145,8 +139,7 @@ return new Word(permWord,this.base);
  	 return true;
   }
 
-
-  static	commutator(a, b, base){
+  static commutator(a, b, base){
  			 var com =Array(2*(a.length()+b.length())).fill(0)
  			 for (var i=0; i<a.length(); i++){
  			 com[i]=a.word[i];
@@ -170,7 +163,8 @@ return new Word(permWord,this.base);
 
  			 var w1 = new Word(com, base);
  			 return w1.reduce()
- 				 }
+	}
+
   /**
  	* Return if the Word's array representation is all zeros
  	*
@@ -194,13 +188,10 @@ return new Word(permWord,this.base);
  	*
   @return array representation from a String
  	*/
-static  fromString(s,base){
+	static  fromString(s,base){
 	 var p = [];
  	 for(var i=0;i<s.length;i++){
 		 p[i] =s.charCodeAt(i);
-		 //console.log(s.charCodeAt(i));
-		// console.log(p[i]);
- 		 //p[i] = s.charAt(i);
  		 if(p[i] >= 97){
  			 p[i]-=97;
  			 p[i]=p[i]*2;
@@ -220,15 +211,15 @@ static  fromString(s,base){
   @return
  	*/
   compareTo(a){
- 	 if(this.word.length()<a.length()){
+ 	 if(this.length()<a.length()) {
  		 return -1;
- 	 }else if(this.word.length()>a.length()){
+ 	 } else if(this.length()>a.length()){
  		 return 1;
  	 }
- 	 for(var i=0;i<a.length();i++){
- 		 if(this.word.get(i)<a.get(i)){
+ 	 for(var i=0;i<a.length();i++) {
+ 		 if(this.get(i)<a.get(i)){
  			 return -1;
- 		 }else if(this.word.get(i)>a.get(i)){
+ 		 } else if(this.get(i)>a.get(i)) {
  			 return 1;
  		 }
  	 }
@@ -268,60 +259,41 @@ static  fromString(s,base){
 
   equals(that2){
  	 if ( this.word == that2 ) return true;
-
- 				 //use instanceof instead of getClass here for two reasons
- 				 //1. if need be, it can match any supertype, and not just one class;
- 				 //2. it renders an explict check for "that == null" redundant, since
- 				 //it does the check for null already - "null instanceof [type]" always
- 				 //returns false. (See Effective Java by Joshua Bloch.)
  	 if ( !(that2 instanceof this.word) ) return false;
  		 that = that2;
  		 return (compareTo(that)==0);
   }
-  /**
- 	* Returns the string form of the Word
- 	*
- 	* This fails as base is larger than 52. This is highly unlikely
-  @return    The String that represent the CyclicWord
- 	*/
 
-
-  //This works up to 52 edges. I assume no one will go that far
-toString(){
+	toString(){
  	 var c = [];
- 	 for(var i=0;i<this.word.length;i++){
- 		 if(this.get(i)%2==0){
+ 	 for(var i=0;i<this.word.length;i++) {
+ 		 if(this.get(i)%2==0) {
  			 c[i] =  String.fromCharCode(this.get(i)/2 + 97);
- 		 }else{
+ 		 } else {
  			 c[i] =  String.fromCharCode(this.get(i)/2 + 65);
  		 }
  	 }
-	 return c;
+	 return c.join('');
   }
 
-
   //Returns a cyclically reduced version of the Word
-
-  reduce(){
+  reduce() {
  	 var v= this.word;
  	 var count = 0;
  	 var n = new Word(v,this.base);
  	 while (count + 1 < n.length()) {
- 		 if (n.get(count) == this.bar(n.get(count + 1))) {
+ 		 if (n.get(count) == Word.bar(n.get(count + 1))) {
  			 v = n.word;
  			 if (n.length() == 2) return null;
  			 var w = [];
  			 if (count > 0){
- 			w=	 this.arraycopy(v, 0, w, 0, count);
+ 			  w = this.arraycopy(v, 0, w, 0, count);
  			 }
  			 if(v.length - count - 2 > 0){
- 				w= this.arraycopy(v, count + 2, w, count, v.length - count - 2);
+ 				w = this.arraycopy(v, count + 2, w, count, v.length - count - 2);
  			 }
  			 n = new Word(w,this.base);
-			// console.log(n)
- 			 //count=0;
  			 if (count > 0){
- 				 //System.out.println(count+" ,, ");
  				 count--;}
  		 } else count++;
  	 }
@@ -329,16 +301,14 @@ toString(){
   }
 
   //checks for reduced NOT necessarily cyc reduced
-  is_reducedNNC( ) {
+  is_reducedNNC() {
  	 var v= this.word;
  	 var count = 0;
- 	 var n = new Word(v,base);
+ 	 var n = new Word(v,this.base);
  	 while (count + 1 < n.length()) {
-
- 		 if (n.get(count) == bar(n.get(count + 1))) {
+ 		 if (n.get(count) == Word.bar(n.get(count + 1))) {
  			 return false;
  		 } else count++;
-
  	 }
  	 return true;
   }
@@ -346,15 +316,13 @@ toString(){
   Is_Cyc_reduced( ) {
  	 var v= this.word;
  	 var count = 0;
- 	 var n = new Word(v,base);
+ 	 var n = new Word(v,this.base);
  	 while (count + 1 < n.length()) {
-
- 		 if (n.get(count) == bar(n.get(count + 1))) {
+ 		 if (n.get(count) == Word.bar(n.get(count + 1))) {
  			 return false;
  		 } else count++;
-
  	 }
- 	 if(n.get(0)==bar(n.get(n.length()-1))){
+ 	 if(n.get(0)==Word.bar(n.get(n.length()-1))){
  		 return false;
  	 }
  	 return true;
@@ -363,63 +331,59 @@ toString(){
   Is_reduced( ) {
  	 var v= this.word;
  	 var count = 0;
- 	 var n = new Word(v,base);
+ 	 var n = new Word(v,this.base);
  	 while (count + 1 < n.length()) {
-
- 		 if (n.get(count) == bar(n.get(count + 1))) {
+ 		 if (n.get(count) == Word.bar(n.get(count + 1))) {
  			 return false;
  		 } else count++;
-
  	 }
  	 return true;
   }
   //gives the linearly reduced vector
   //NOTE: It does not reduce cyclically.
 
-  reduce1( ) {
- 	 var v= this.word;
+  reduce1() {
+ 	 var v = this.word;
  	 var count = 0;
  	 while (count + 1 < v.length) {
-
- 		 if (v[count] == bar(get(v[count + 1]))) {
+ 		 if (v[count] == Word.bar(v[count + 1])) {
  			 if (v.length == 2) return null;
-
  			 var w = [];
- 			 arraycopy(v, 0, w, 0, count);
- 			 var n = new Word(w,base);
+ 			 this.arraycopy(v, 0, w, 0, count);
+ 			 var n = new Word(w,this.base);
  			 console.log("mid "+n.toString());
- 			 arraycopy(v, count + 2, w, count, v.length - count - 2);
+ 			 this.arraycopy(v, count + 2, w, count, v.length - count - 2);
  			 v = w;
- 				n = new Word(w,base);
+ 				n = new Word(w,this.base);
  			 console.log(n.toString());
  			 if (count > 0)
  				 count--;
  		 } else count++;
  	 }
- 	 n = new Word(v,base);
+ 	 n = new Word(v,this.base);
  	 console.log(n.toString());
- 	 return new Word(v,base);
+ 	 return new Word(v,this.base);
   }
 
-  cyclicallyReduce( ) {
- 	 var w1 = this.word.reduce();
- 	 //System.out.println("xxx"+w1.toString());
+  cyclicallyReduce() {
+ 	 var w1 = this.reduce();
+ 	 //console.log("xxx"+w1.toString());
  	 var v= w1.word;
  	 var count = 0;
- 	 while(count < v.length/2 & w1.get(count) == bar(w1.get(v.length-count-1 ))) count++;
+ 	 while(count < v.length/2 & w1.get(count) == Word.bar(w1.get(v.length-count-1))) count++;
  	 if(count>0) {
- 		 var w = new int[v.length-2*count];
- 		 arraycopy(v,count , w, 0, v.length-2*count);
- 		 //System.out.println(count);
- 		 return new Word(w,base);
- 	 } else return new Word(v,base);
+ 		 var w = [];
+ 		 this.arraycopy(v,count , w, 0, v.length-2*count);
+ 		 //console.log(count);
+ 		 return new Word(w,this.base);
+ 	 } else return new Word(v,this.base);
   }
 
   //@return true if reduced, false otherwise.
 
   isWordReduced(){
- 	 for(var i = 0 ; i < this.word.length() ; i++){
- 		 if(get(i) == bar(get(i+1))){
+ 	 for(var i = 0 ; i < this.length() ; i++){
+ 		 if(this.get(i) == Word.bar(this.get(i+1))){
  			 return false;
  		 }
  	 }
@@ -427,7 +391,7 @@ toString(){
   }
 
   next(){
- 	 var v = this.word.clone();
+ 	 var v = this.clone();
  	 v.addOne();
  	 return v;
   }
@@ -435,7 +399,7 @@ toString(){
  	//@return the next CyclicWord
 
   nextReduced(){
- 	 var v = this.word.clone();
+ 	 var v = this.clone();
  	 while(true){
  		 v.addOne();
  		 //check if reduced and smallest
@@ -443,16 +407,14 @@ toString(){
  			 return v;
  		 }
  	 }
- }
+ 	}
 
-arraycopy(v,vi,w,wi,count){
-var outArray=w;
-for (var i=0;i<count;i++)
-{
-outArray[i+wi]=v[vi+i];
-}
-	return outArray;
-}
-
+	arraycopy(v,vi,w,wi,count) {
+		var outArray=w;
+		for (var i=0;i<count;i++) {
+			outArray[i+wi]=v[vi+i];
+		}
+		return outArray;
+	}
 
 }

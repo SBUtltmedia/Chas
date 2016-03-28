@@ -1,28 +1,21 @@
 
 export default class Word {
 
-	constructor (word=[], base=undefined)
-	{
-		this.base=base;
-		this.word=word;
+	constructor (word=[], base) {
+		this.base = base;
+		this.word = word;
 		for (var i=0; i<this.word.length; i++)
-		{
-			if(word[i]>=base)
-			return ("Error: Word and base are not compatible. word:"+this.toString()+" base:"+base);
-		}
+			if ( word[i] >= base )
+				throw (`Error: Word and base are not compatible. word: ${word} base: ${base}`);
 	}
 
-	getWord() {
-		return this.word;
-	}
+	getWord() { return this.word; }
 
 	clone() { return new Word(this.word, this.base);  }
 
-	initialize()
-	{
-		var wordLen = this.word.length;
-		this.word = Array.from(new Array(wordLen-1), () => 0);
-		this.word[wordLen-1] = -1;
+	initialize() {
+		this.word.fill(0);
+		this.word.splice(-1,1,-1);
 	}
 
 	permute(i) {
@@ -45,10 +38,10 @@ export default class Word {
 
 	set(i, j) {
 		var i = (i%this.word.length + this.word.length) % this.word.length;
-		word[i] = j;
+		this.word[i] = j;
 	}
 
-static	bar(i) {
+	static bar(i) {
 		if(Number.isInteger(i) == true) {
 			if(i%2==0) {
 				return i+1;
@@ -109,35 +102,35 @@ static	bar(i) {
  	 return new Word(this.word,this.base);
   }
 
-  /**
- 	* Return if the Word is not in u = v^k form, where k>1
- 	*
-  @return true if primitive, false otherwise.
- 	*/
-  isPrimitive() {
- 	 for(var n = 1; n <= this.word.length/2;n++){
- 		 if(this.word.length%n==0){
- 			 var h = true;
- 			 for(var j=0;j<this.word.length/n;j++){
- 				 var hit = true;
- 				 for(var i=0;i<n;i++){
- 					 if(this.get(i)!=this.get(j*n+i)){
- 						 hit = false;
- 						 break;
- 					 }
- 				 }
- 				 if(hit == false){
- 					 h = false;
- 					 break;
- 				 }
- 			 }
- 			 if(h){
- 				 return false;
- 			 }
- 		 }
- 	 }
- 	 return true;
-  }
+	/**
+	* Return if the Word is not in u = v^k form, where k>1
+	*
+	@return true if primitive, false otherwise.
+	*/
+	isPrimitive() {
+		for (var n = 1; n <= this.word.length/2; n++) {
+			if (this.word.length % n == 0) {
+				var h = true;
+				for (var j=0; j < this.word.length/n; j++) {
+					var hit = true;
+					for (var i=0; i<n; i++) {
+						if (this.get(i) != this.get(j*n+i)) {
+							hit = false;
+							break;
+						}
+					}
+					if(hit == false) {
+						h = false;
+						break;
+					}
+				}
+				if(h) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
   static commutator(a, b, base){
  			 var com =Array(2*(a.length()+b.length())).fill(0)
